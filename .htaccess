@@ -1,0 +1,34 @@
+# Configuración de Apache para el sistema de Habilidades Directivas
+
+# Establecer página de inicio
+DirectoryIndex index.php
+
+# Prevenir listado de directorios
+Options -Indexes
+
+# Configuración de encoding
+AddDefaultCharset UTF-8
+
+# Proteger archivos sensibles
+<Files "config.php">
+    Require all denied
+</Files>
+
+<Files ".gitkeep">
+    Require all denied
+</Files>
+
+# Proteger directorio data
+RedirectMatch 403 ^/habilidades_directivas/data/.*$
+
+# Configuración de seguridad
+<IfModule mod_headers.c>
+    # Prevenir XSS
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Prevenir clickjacking
+    Header always append X-Frame-Options SAMEORIGIN
+    
+    # Configurar Content-Type
+    Header set X-Content-Type-Options nosniff
+</IfModule>

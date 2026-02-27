@@ -1,0 +1,171 @@
+{
+    "id": "69a1c1096d4a8",
+    "fecha": "2026-02-27 17:06:33",
+    "nombre": "Maximiliano Pérez",
+    "email": "bmdp149@hotmail.com",
+    "resultados": {
+        "tecnicas": {
+            "nombre": "Técnicas",
+            "descripcion": "Desarrollar tareas específicas.",
+            "respuestas": [
+                "3",
+                "3",
+                "4",
+                "4"
+            ],
+            "promedio": 3.5,
+            "nivel": "Bueno",
+            "clase": "info",
+            "mensaje": "Tienes un buen nivel en esta habilidad."
+        },
+        "interpersonales": {
+            "nombre": "Interpersonales",
+            "descripcion": "Se refiere a la habilidad para trabajar en grupo, con espíritu de colaboración, cortesía y cooperación para resolver las necesidades de otras personas e, incluso, para obtener objetivos comunes.",
+            "respuestas": [
+                "4",
+                "3",
+                "4",
+                "3",
+                "3"
+            ],
+            "promedio": 3.4,
+            "nivel": "Regular",
+            "clase": "warning",
+            "mensaje": "Tienes un nivel aceptable, pero hay áreas de mejora."
+        },
+        "sociales": {
+            "nombre": "Sociales",
+            "descripcion": "Son las acciones de uno con los demás y los demás con uno. Es donde se da el intercambio y la convivencia humana.",
+            "respuestas": [
+                "2",
+                "2",
+                "3",
+                "2"
+            ],
+            "promedio": 2.25,
+            "nivel": "Necesita mejorar",
+            "clase": "danger",
+            "mensaje": "Deberías trabajar en desarrollar esta habilidad."
+        },
+        "academicas": {
+            "nombre": "Académicas",
+            "descripcion": "Capacidad y habilidad para hacer análisis, comparación, contratación, evaluación, juicio o crítica.",
+            "respuestas": [
+                "4",
+                "4",
+                "4",
+                "3",
+                "2"
+            ],
+            "promedio": 3.4,
+            "nivel": "Regular",
+            "clase": "warning",
+            "mensaje": "Tienes un nivel aceptable, pero hay áreas de mejora."
+        },
+        "innovacion": {
+            "nombre": "De Innovación",
+            "descripcion": "Invención, descubrimiento, suposición, formulación de hipótesis y teorización.",
+            "respuestas": [
+                "2",
+                "3",
+                "2",
+                "1"
+            ],
+            "promedio": 2,
+            "nivel": "Necesita mejorar",
+            "clase": "danger",
+            "mensaje": "Deberías trabajar en desarrollar esta habilidad."
+        },
+        "practicas": {
+            "nombre": "Prácticas",
+            "descripcion": "Aplicación, empleo e implementación (hábito).",
+            "respuestas": [
+                "2",
+                "3",
+                "2",
+                "1"
+            ],
+            "promedio": 2,
+            "nivel": "Necesita mejorar",
+            "clase": "danger",
+            "mensaje": "Deberías trabajar en desarrollar esta habilidad."
+        },
+        "fisicas": {
+            "nombre": "Físicas",
+            "descripcion": "Autoeficiencia, flexibilidad, salud.",
+            "respuestas": [
+                "3",
+                "2",
+                "2",
+                "2"
+            ],
+            "promedio": 2.25,
+            "nivel": "Necesita mejorar",
+            "clase": "danger",
+            "mensaje": "Deberías trabajar en desarrollar esta habilidad."
+        },
+        "pensamiento": {
+            "nombre": "De Pensamiento",
+            "descripcion": "Aprender a pensar y generar conocimiento.",
+            "respuestas": [
+                "4",
+                "3",
+                "2",
+                "3",
+                "3"
+            ],
+            "promedio": 3,
+            "nivel": "Regular",
+            "clase": "warning",
+            "mensaje": "Tienes un nivel aceptable, pero hay áreas de mejora."
+        },
+        "directivas": {
+            "nombre": "Directivas",
+            "descripcion": "Saber dirigir, coordinar equipos de trabajo.",
+            "respuestas": [
+                "4",
+                "3",
+                "3",
+                "3",
+                "3"
+            ],
+            "promedio": 3.2,
+            "nivel": "Regular",
+            "clase": "warning",
+            "mensaje": "Tienes un nivel aceptable, pero hay áreas de mejora."
+        },
+        "liderazgo": {
+            "nombre": "De Liderazgo",
+            "descripcion": "Guiar, impulsar, motivar al equipo hacia un bien común.",
+            "respuestas": [
+                "2",
+                "3",
+                "4",
+                "3",
+                "3"
+            ],
+            "promedio": 3,
+            "nivel": "Regular",
+            "clase": "warning",
+            "mensaje": "Tienes un nivel aceptable, pero hay áreas de mejora."
+        },
+        "empresariales": {
+            "nombre": "Empresariales",
+            "descripcion": "Emprender una nueva idea, proyecto, empresa o negocio.",
+            "respuestas": [
+                "1",
+                "1",
+                "2",
+                "2",
+                "1"
+            ],
+            "promedio": 1.4,
+            "nivel": "Necesita mejorar",
+            "clase": "danger",
+            "mensaje": "Deberías trabajar en desarrollar esta habilidad."
+        }
+    },
+    "promedio_general": 2.7,
+    "nivel_general": "Regular",
+    "total_preguntas": 50
+}

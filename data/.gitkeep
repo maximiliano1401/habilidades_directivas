@@ -1,0 +1,13 @@
+# Directorio para almacenar evaluaciones en formato JSON
+
+Este directorio se crea automáticamente cuando se procesa la primera evaluación.
+
+Cada archivo de evaluación contiene:
+- ID único de evaluación
+- Fecha y hora
+- Datos personales (nombre, email)
+- Respuestas completas
+- Promedios por habilidad
+- Nivel general y por habilidad
+
+Los archivos se nombran con el formato: `evaluacion_[ID].json`
