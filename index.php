@@ -7,74 +7,255 @@
     <title><?php echo TITULO_SISTEMA; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
+        :root {
+            --primary-dark: #2C3E50;
+            --secondary-dark: #34495E;
+            --accent-gold: #F39C12;
+            --bg-light: #F8F9FA;
+            --text-dark: #2C3E50;
+            --border-light: #E5E7EB;
         }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background: var(--bg-light);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+        
+        .navbar-custom {
+            background: var(--primary-dark);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(44, 62, 80, 0.1);
+        }
+        
         .hero-section {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 3rem;
-            margin: 2rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 4rem 3rem;
+            margin: 3rem 0;
+            animation: fadeInUp 0.6s ease-out;
         }
-        .feature-box {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            transition: transform 0.3s;
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .feature-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        
+        .stats-bar {
+            background: var(--primary-dark);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 3rem;
         }
-        .feature-icon {
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .stat-number {
             font-size: 2.5rem;
-            color: #667eea;
+            font-weight: 700;
+            color: var(--accent-gold);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .feature-box {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 2rem 1.5rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .feature-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.12);
+            border-color: var(--accent-gold);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .feature-box h5 {
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .btn-comenzar {
+            background: var(--accent-gold);
+            color: white;
+            border: none;
+            padding: 14px 48px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-comenzar:hover {
+            background: #E67E22;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+            color: white;
+        }
+        
+        h1 {
+            color: var(--primary-dark);
+            font-weight: 700;
             margin-bottom: 1rem;
         }
-        .btn-comenzar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            padding: 15px 50px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 50px;
-            transition: transform 0.3s;
+        
+        h3, h4 {
+            color: var(--primary-dark);
+            font-weight: 600;
         }
-        .btn-comenzar:hover {
-            transform: scale(1.05);
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
         }
-        h1 {
-            color: #667eea;
-            font-weight: bold;
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent-gold);
+        }
+        
+        .habilidad-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .habilidad-item:last-child {
+            border-bottom: none;
+        }
+        
+        .habilidad-item h6 {
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .habilidad-item .small {
+            color: #6B7280;
+        }
+        
+        .info-badge {
+            background: #FEF3C7;
+            color: #92400E;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            border-left: 4px solid var(--accent-gold);
+            margin: 2rem 0;
         }
     </style>
 </head>
 <body>
+    <!-- Navbar -->
+    <nav class="navbar-custom">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <span class="text-white h5 mb-0 fw-bold">
+                    <i class="bi bi-briefcase"></i> Sistema de Evaluación Profesional
+                </span>
+                <span class="text-white small">
+                    <i class="bi bi-shield-check"></i> Confiable y Validado
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <span class="stat-number">11</span>
+                        <span class="stat-label">Habilidades Clave</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <span class="stat-number"><?php 
+                            $total_preguntas = 0;
+                            foreach ($habilidades as $hab) {
+                                $total_preguntas += count($hab['preguntas']);
+                            }
+                            echo $total_preguntas;
+                        ?></span>
+                        <span class="stat-label">Criterios de Evaluación</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <span class="stat-number">15</span>
+                        <span class="stat-label">Minutos Promedio</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="hero-section">
             <div class="text-center mb-5">
-                <h1 class="display-4 mb-4">
-                    <i class="bi bi-person-badge"></i>
-                    Habilidades Directivas
+                <h1 class="display-5 mb-3">
+                    Evaluación de Habilidades Directivas
                 </h1>
                 <p class="lead text-muted">
-                    Descubre y desarrolla tus competencias gerenciales y de liderazgo
+                    Identifica tus fortalezas y áreas de desarrollo profesional mediante<br>
+                    un análisis exhaustivo basado en competencias gerenciales
                 </p>
             </div>
 
             <div class="row mb-5">
                 <div class="col-md-12">
-                    <h3 class="mb-4">¿Qué son las Habilidades Directivas?</h3>
-                    <p class="text-justify">
-                        Las habilidades directivas son el conjunto de capacidades y competencias que permiten a una persona 
-                        desempeñarse efectivamente en roles de gestión, liderazgo y toma de decisiones. Estas habilidades 
-                        son fundamentales para el éxito profesional y el desarrollo de equipos de alto rendimiento.
+                    <h3 class="section-title">Acerca de la Evaluación</h3>
+                    <p class="text-muted" style="line-height: 1.8;">
+                        Las habilidades directivas representan el conjunto de competencias esenciales que determinan 
+                        la efectividad de los profesionales en posiciones de liderazgo y gestión. Esta herramienta 
+                        proporciona un diagnóstico preciso de sus capacidades actuales, permitiéndole diseñar un 
+                        plan de desarrollo profesional estratégico.
                     </p>
                 </div>
             </div>
@@ -82,10 +263,10 @@
             <div class="row">
                 <?php 
                 $features = [
-                    ['icon' => 'bi-clipboard-check', 'title' => 'Evaluación Completa', 'desc' => 'Analiza 11 áreas clave de habilidades directivas'],
-                    ['icon' => 'bi-graph-up', 'title' => 'Resultados Detallados', 'desc' => 'Obtén un análisis personalizado de tus fortalezas'],
-                    ['icon' => 'bi-lightbulb', 'title' => 'Recomendaciones', 'desc' => 'Identifica áreas de mejora y desarrollo'],
-                    ['icon' => 'bi-file-earmark-pdf', 'title' => 'Reporte en PDF', 'desc' => 'Descarga tu evaluación completa'],
+                    ['icon' => 'bi-clipboard-data', 'title' => 'Evaluación Integral', 'desc' => 'Análisis completo de 11 dimensiones directivas'],
+                    ['icon' => 'bi-graph-up-arrow', 'title' => 'Análisis Detallado', 'desc' => 'Interpretación profesional de resultados'],
+                    ['icon' => 'bi-bullseye', 'title' => 'Plan de Acción', 'desc' => 'Recomendaciones específicas y priorizadas'],
+                    ['icon' => 'bi-file-earmark-text', 'title' => 'Reporte Ejecutivo', 'desc' => 'Documento descargable en formato PDF'],
                 ];
                 
                 foreach ($features as $feature): ?>
@@ -93,7 +274,7 @@
                     <div class="feature-box text-center">
                         <i class="bi <?php echo $feature['icon']; ?> feature-icon"></i>
                         <h5><?php echo $feature['title']; ?></h5>
-                        <p class="small text-muted"><?php echo $feature['desc']; ?></p>
+                        <p class="small text-muted mb-0"><?php echo $feature['desc']; ?></p>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -101,13 +282,16 @@
 
             <div class="row mt-5">
                 <div class="col-md-12">
-                    <h4 class="mb-3">Áreas de Evaluación:</h4>
+                    <h4 class="section-title">Competencias Evaluadas</h4>
                     <div class="row">
                         <?php foreach ($habilidades as $habilidad): ?>
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <h6><i class="bi bi-check-circle-fill text-success"></i> <?php echo $habilidad['nombre']; ?></h6>
-                                <p class="small text-muted ms-4"><?php echo $habilidad['descripcion']; ?></p>
+                            <div class="habilidad-item">
+                                <h6>
+                                    <i class="bi bi-check-circle text-success" style="font-size: 0.9rem;"></i>
+                                    <?php echo $habilidad['nombre']; ?>
+                                </h6>
+                                <p class="small text-muted mb-0"><?php echo $habilidad['descripcion']; ?></p>
                             </div>
                         </div>
                         <?php endforeach; ?>
@@ -115,24 +299,41 @@
                 </div>
             </div>
 
-            <div class="text-center mt-5">
-                <p class="mb-4">
-                    <strong>Tiempo estimado:</strong> 10-15 minutos | 
-                    <strong>Preguntas:</strong> <?php 
-                        $total_preguntas = 0;
-                        foreach ($habilidades as $hab) {
-                            $total_preguntas += count($hab['preguntas']);
-                        }
-                        echo $total_preguntas;
-                    ?>
-                </p>
-                <a href="formulario.php" class="btn btn-primary btn-comenzar">
-                    Comenzar Evaluación <i class="bi bi-arrow-right"></i>
+            <div class="info-badge text-center mt-5">
+                <strong><i class="bi bi-clock-history"></i> Duración estimada:</strong> 10-15 minutos | 
+                <strong><i class="bi bi-file-text"></i> Preguntas:</strong> <?php echo $total_preguntas; ?> | 
+                <strong><i class="bi bi-bar-chart"></i> Escala:</strong> Likert 1-5
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="formulario.php" class="btn btn-comenzar">
+                    Iniciar Evaluación <i class="bi bi-arrow-right ms-2"></i>
                 </a>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Animación de números en stats
+        document.addEventListener('DOMContentLoaded', function() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            statNumbers.forEach(stat => {
+                const target = parseInt(stat.textContent);
+                let current = 0;
+                const increment = target / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        stat.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(current);
+                    }
+                }, 20);
+            });
+        });
+    </script>
 </body>
 </html>
