@@ -1,6 +1,40 @@
 <?php 
 require_once 'config.php';
-session_start();
+iniciarSesionSegura();
+requerirUsuario(); // Solo usuarios autenticados pueden acceder
+
+$usuario_id = obtenerUsuarioActual();
+$empresa_id = $_SESSION['empresa_id'];
+$pdo = obtenerConexion();
+
+// Calcular total de preguntas
+$total_preguntas = 0;
+foreach ($habilidades as $hab) {
+    $total_preguntas += count($hab['preguntas']);
+}
+
+// Verificar si hay un cuestionario en progreso
+$cuestionario_actual = obtenerCuestionarioEnProgreso($usuario_id);
+
+// Si no hay cuestionario en progreso, crear uno nuevo
+if (!$cuestionario_actual) {
+    $cuestionario_id = crearCuestionario($usuario_id, $empresa_id, $total_preguntas);
+} else {
+    $cuestionario_id = $cuestionario_actual['id'];
+}
+
+// Cargar progreso guardado
+$stmt = $pdo->prepare("SELECT * FROM progreso_cuestionario WHERE usuario_id = ? AND cuestionario_id = ?");
+$stmt->execute([$usuario_id, $cuestionario_id]);
+$progreso = $stmt->fetch();
+
+$respuestas_guardadas = [];
+$paso_guardado = 0;
+
+if ($progreso && $progreso['respuestas_guardadas']) {
+    $respuestas_guardadas = json_decode($progreso['respuestas_guardadas'], true) ?? [];
+    $paso_guardado = $progreso['paso_actual'] ?? 0;
+}
 
 // Agrupar habilidades en pasos (3 habilidades por paso aproximadamente)
 $pasos = [
@@ -285,13 +319,40 @@ $pasos = [
 <body>
     <nav class="navbar-custom">
         <div class="container">
-            <a class="text-white text-decoration-none" href="index.php">
-                <i class="bi bi-arrow-left"></i> Volver al Inicio
-            </a>
+            <span class="text-white">
+                <i class="bi bi-person-circle me-2"></i>
+                <strong><?php echo htmlspecialchars($_SESSION['nombre']); ?></strong>
+            </span>
+            <div>
+                <span class="text-white me-3">
+                    <i class="bi bi-save me-1"></i>
+                    <small id="autoguardadoStatus">Autoguardado activado</small>
+                </span>
+                <a href="logout.php" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </a>
+            </div>
         </div>
     </nav>
 
     <div class="container mt-4">
+        <!-- Mensajes de error o éxito -->
+        <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Error:</strong> <?php echo htmlspecialchars($_SESSION['error']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php unset($_SESSION['error']); endif; ?>
+        
+        <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <?php echo htmlspecialchars($_SESSION['success']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php unset($_SESSION['success']); endif; ?>
+        
         <div class="row">
             <div class="col-lg-9">
                 <div class="form-container">
@@ -300,61 +361,22 @@ $pasos = [
 
                     <!-- Stepper -->
                     <div class="stepper-wrapper">
-                        <div class="stepper-item active" data-step="0">
-                            <div class="stepper-circle">
-                                <i class="bi bi-person"></i>
-                            </div>
-                            <div class="stepper-label">Datos</div>
-                        </div>
                         <?php for($i = 1; $i <= count($pasos); $i++): ?>
-                        <div class="stepper-item" data-step="<?php echo $i; ?>">
+                        <div class="stepper-item <?php echo ($i == 1 && $paso_guardado == 0) ? 'active' : ($i <= $paso_guardado ? 'completed' : ''); ?>" data-step="<?php echo $i; ?>">
                             <div class="stepper-circle"><?php echo $i; ?></div>
                             <div class="stepper-label">Paso <?php echo $i; ?></div>
                         </div>
                         <?php endfor; ?>
-                        <div class="stepper-item" data-step="<?php echo count($pasos) + 1; ?>">
-                            <div class="stepper-circle">
-                                <i class="bi bi-check-lg"></i>
-                            </div>
-                            <div class="stepper-label">Finalizar</div>
-                        </div>
                     </div>
 
                     <form id="evaluacionForm" method="POST" action="procesar.php">
-                        <!-- Paso 0: Datos Personales -->
-                        <div class="paso-section active" data-paso="0">
-                            <div class="datos-personales-section">
-                                <h4 class="mb-4">
-                                    <i class="bi bi-person-badge text-warning"></i>
-                                    Información Personal
-                                </h4>
-                                
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="nombre" class="form-label">
-                                            Nombre Completo <span class="required-field">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="nombre" name="nombre" required>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="email" class="form-label">
-                                            Correo Electrónico <span class="required-field">*</span>
-                                        </label>
-                                        <input type="email" class="form-control" id="email" name="email" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="text-end mt-4">
-                                <button type="button" class="btn btn-siguiente btn-nav" onclick="nextStep()">
-                                    Siguiente <i class="bi bi-arrow-right ms-2"></i>
-                                </button>
-                            </div>
-                        </div>
-
+                        <!-- Campos ocultos -->
+                        <input type="hidden" name="cuestionario_id" value="<?php echo $cuestionario_id; ?>">
+                        <input type="hidden" name="usuario_id" value="<?php echo $usuario_id; ?>">
+                        
                         <!-- Pasos con preguntas -->
                         <?php foreach ($pasos as $numPaso => $habilidadesPaso): ?>
-                        <div class="paso-section" data-paso="<?php echo $numPaso; ?>">
+                        <div class="paso-section <?php echo ($numPaso == 1 && $paso_guardado == 0) || ($numPaso == $paso_guardado) ? 'active' : ''; ?>" data-paso="<?php echo $numPaso; ?>">
                             <h4 class="mb-4">Paso <?php echo $numPaso; ?> de <?php echo count($pasos); ?></h4>
                             
                             <?php foreach ($habilidadesPaso as $habilidad): ?>
@@ -448,16 +470,35 @@ $pasos = [
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let currentStep = 0;
-        const totalSteps = <?php echo count($pasos) + 1; ?>;
+        let currentStep = <?php echo max(1, $paso_guardado); ?>;
+        const totalSteps = <?php echo count($pasos); ?>;
         const totalPreguntas = <?php echo $total_preguntas; ?>;
+        const cuestionarioId = <?php echo $cuestionario_id; ?>;
+        const usuarioId = <?php echo $usuario_id; ?>;
+        let autoguardadoTimeout = null;
+
+        // Cargar respuestas guardadas
+        const respuestasGuardadas = <?php echo json_encode($respuestas_guardadas); ?>;
+
+        function cargarRespuestasGuardadas() {
+            if (respuestasGuardadas && Object.keys(respuestasGuardadas).length > 0) {
+                for (const [name, value] of Object.entries(respuestasGuardadas)) {
+                    const input = document.querySelector(`input[name="${name}"][value="${value}"]`);
+                    if (input) {
+                        input.checked = true;
+                    }
+                }
+                updateProgress();
+            }
+        }
 
         function updateStepper() {
             document.querySelectorAll('.stepper-item').forEach((item, index) => {
+                const stepNum = index + 1;
                 item.classList.remove('active', 'completed');
-                if (index < currentStep) {
+                if (stepNum < currentStep) {
                     item.classList.add('completed');
-                } else if (index === currentStep) {
+                } else if (stepNum === currentStep) {
                     item.classList.add('active');
                 }
             });
@@ -470,6 +511,49 @@ $pasos = [
             document.getElementById('progressFill').style.width = porcentaje + '%';
             document.getElementById('progressText').textContent = 
                 respondidas + ' de ' + totalPreguntas + ' preguntas';
+        }
+
+        function autoguardar() {
+            // Cancelar autoguardado anterior si existe
+            if (autoguardadoTimeout) {
+                clearTimeout(autoguardadoTimeout);
+            }
+
+            // Programar autoguardado después de 2 segundos de inactividad
+            autoguardadoTimeout = setTimeout(() => {
+                guardarProgreso();
+            }, 2000);
+        }
+
+        function guardarProgreso() {
+            console.log('Guardando progreso...');
+            const formData = new FormData(document.getElementById('evaluacionForm'));
+            formData.append('action', 'autoguardar');
+            formData.append('paso_actual', currentStep);
+
+            // Mostrar indicador de guardado
+            const status = document.getElementById('autoguardadoStatus');
+            status.innerHTML = '<i class="bi bi-hourglass-split"></i> Guardando...';
+
+            fetch('guardar_progreso.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    status.innerHTML = '<i class="bi bi-check-circle"></i> Guardado';
+                    setTimeout(() => {
+                        status.innerHTML = 'Autoguardado activado';
+                    }, 2000);
+                } else {
+                    status.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Error al guardar';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                status.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Error';
+            });
         }
 
         function nextStep() {
@@ -501,12 +585,13 @@ $pasos = [
                 currentStep++;
                 document.querySelector(`.paso-section[data-paso="${currentStep}"]`).classList.add('active');
                 updateStepper();
+                guardarProgreso(); // Guardar al cambiar de paso
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
         function prevStep() {
-            if (currentStep > 0) {
+            if (currentStep > 1) {
                 document.querySelector(`.paso-section[data-paso="${currentStep}"]`).classList.remove('active');
                 currentStep--;
                 document.querySelector(`.paso-section[data-paso="${currentStep}"]`).classList.add('active');
@@ -515,28 +600,69 @@ $pasos = [
             }
         }
 
-        // Actualizar progreso al cambiar respuestas
-        document.getElementById('evaluacionForm').addEventListener('change', updateProgress);
+        // Actualizar progreso y autoguardar al cambiar respuestas
+        document.getElementById('evaluacionForm').addEventListener('change', function() {
+            updateProgress();
+            autoguardar();
+        });
 
         // Validación del formulario
         document.getElementById('evaluacionForm').addEventListener('submit', function(e) {
+            console.log('Submit event triggered');
             const respondidas = document.querySelectorAll('input[type="radio"]:checked').length;
+            console.log(`Preguntas respondidas: ${respondidas} de ${totalPreguntas}`);
             
             if (respondidas < totalPreguntas) {
                 e.preventDefault();
+                console.log('Submit prevented: faltan preguntas por responder');
                 alert('Por favor, responde todas las preguntas antes de enviar.');
                 return false;
             }
 
-            if (!confirm('¿Estás seguro de enviar tu evaluación?')) {
+            if (!confirm('¿Estás seguro de enviar tu evaluación? Esta acción no se puede deshacer.')) {
                 e.preventDefault();
+                console.log('Submit cancelled by user');
                 return false;
             }
+            
+            // Si llegamos aquí, el usuario confirmó - detener autoguardado y mostrar loading
+            console.log('Deteniendo autoguardado y enviando formulario...');
+            if (autoguardadoTimeout) {
+                clearTimeout(autoguardadoTimeout);
+            }
+            
+            // Deshabilitar botón de envío y mostrar mensaje
+            const submitBtn = document.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Procesando...';
+            }
+            
+            console.log('Formulario enviándose a procesar.php');
+            // Permitir que el formulario se envíe normalmente
+            return true;
+        });
+
+        // Guardar progreso antes de cerrar/recargar la página
+        window.addEventListener('beforeunload', function(e) {
+            guardarProgreso();
         });
 
         // Inicializar
-        updateStepper();
-        updateProgress();
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarRespuestasGuardadas();
+            updateStepper();
+            updateProgress();
+            
+            // Mostrar el paso actual
+            document.querySelectorAll('.paso-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            const currentSection = document.querySelector(`.paso-section[data-paso="${currentStep}"]`);
+            if (currentSection) {
+                currentSection.classList.add('active');
+            }
+        });
     </script>
 </body>
 </html>

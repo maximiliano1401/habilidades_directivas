@@ -1,4 +1,7 @@
-<?php require_once 'config.php'; ?>
+<?php 
+require_once 'config.php';
+iniciarSesionSegura();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -306,9 +309,25 @@
             </div>
 
             <div class="text-center mt-4">
-                <a href="formulario.php" class="btn btn-comenzar">
-                    Iniciar Evaluación <i class="bi bi-arrow-right ms-2"></i>
-                </a>
+                <?php
+                if (estaAutenticado()): 
+                    if (esUsuario()): ?>
+                        <a href="formulario.php" class="btn btn-comenzar">
+                            Iniciar Evaluación <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    <?php else: ?>
+                        <a href="dashboard_empresa.php" class="btn btn-comenzar">
+                            Ver Dashboard <i class="bi bi-speedometer2 ms-2"></i>
+                        </a>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <a href="login.php" class="btn btn-comenzar me-2">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión
+                    </a>
+                    <a href="registro_usuario.php" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-person-plus me-2"></i> Registrarse
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

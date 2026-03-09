@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
-session_start();
+iniciarSesionSegura();
+requerirUsuario();
 
 // Verificar que sea una petición POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -8,103 +9,181 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Obtener datos personales
-$nombre = htmlspecialchars(trim($_POST['nombre'] ?? ''));
-$email = htmlspecialchars(trim($_POST['email'] ?? ''));
+$usuario_id = obtenerUsuarioActual();
+$empresa_id = $_SESSION['empresa_id'];
+$cuestionario_id = intval($_POST['cuestionario_id'] ?? 0);
 
-// Validar datos personales
-if (empty($nombre) || empty($email)) {
-    $_SESSION['error'] = 'Debe completar nombre y correo electrónico';
+if (!$cuestionario_id) {
+    $_SESSION['error'] = 'Cuestionario no válido';
     header('Location: formulario.php');
     exit;
 }
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $_SESSION['error'] = 'El correo electrónico no es válido';
-    header('Location: formulario.php');
-    exit;
-}
-
-// Procesar respuestas por habilidad
-$resultados = [];
-$promedioGeneral = 0;
-$totalRespuestas = 0;
-
-foreach ($habilidades as $habilidad) {
-    $id_habilidad = $habilidad['id'];
+try {
+    $pdo = obtenerConexion();
     
-    // Verificar que existan respuestas para esta habilidad
-    if (!isset($_POST[$id_habilidad]) || !is_array($_POST[$id_habilidad])) {
-        $_SESSION['error'] = 'Faltan respuestas para la habilidad: ' . $habilidad['nombre'];
+    // Verificar que el cuestionario pertenece al usuario
+    $stmt = $pdo->prepare("SELECT * FROM cuestionarios WHERE id = ? AND usuario_id = ? AND estado = 'en_progreso'");
+    $stmt->execute([$cuestionario_id, $usuario_id]);
+    $cuestionario = $stmt->fetch();
+    
+    if (!$cuestionario) {
+        $_SESSION['error'] = 'Cuestionario no encontrado o ya completado';
         header('Location: formulario.php');
         exit;
     }
     
-    $respuestas = $_POST[$id_habilidad];
-    $suma = 0;
-    $cantidad = count($respuestas);
+    // Procesar respuestas por habilidad
+    $resultados = [];
+    $promedioGeneral = 0;
+    $totalRespuestas = 0;
     
-    // Validar que todas las preguntas tengan respuesta
-    if ($cantidad !== count($habilidad['preguntas'])) {
-        $_SESSION['error'] = 'Debe responder todas las preguntas de: ' . $habilidad['nombre'];
-        header('Location: formulario.php');
-        exit;
-    }
+    // Iniciar transacción
+    $pdo->beginTransaction();
     
-    // Calcular promedio de la habilidad
-    foreach ($respuestas as $respuesta) {
-        $valor = intval($respuesta);
-        if ($valor < 1 || $valor > 5) {
-            $_SESSION['error'] = 'Valores de respuesta inválidos';
+    foreach ($habilidades as $habilidad) {
+        $id_habilidad = $habilidad['id'];
+        
+        // Verificar que existan respuestas para esta habilidad
+        if (!isset($_POST[$id_habilidad]) || !is_array($_POST[$id_habilidad])) {
+            $pdo->rollBack();
+            $_SESSION['error'] = 'Faltan respuestas para la habilidad: ' . $habilidad['nombre'];
             header('Location: formulario.php');
             exit;
         }
-        $suma += $valor;
-        $totalRespuestas++;
+        
+        $respuestas = $_POST[$id_habilidad];
+        $suma = 0;
+        $cantidad = count($respuestas);
+        
+        // Validar que todas las preguntas tengan respuesta
+        if ($cantidad !== count($habilidad['preguntas'])) {
+            $pdo->rollBack();
+            $_SESSION['error'] = 'Debe responder todas las preguntas de: ' . $habilidad['nombre'];
+            header('Location: formulario.php');
+            exit;
+        }
+        
+        // Guardar cada respuesta individual
+        foreach ($respuestas as $idx => $respuesta) {
+            $valor = intval($respuesta);
+            if ($valor < 1 || $valor > 5) {
+                $pdo->rollBack();
+                $_SESSION['error'] = 'Valores de respuesta inválidos';
+                header('Location: formulario.php');
+                exit;
+            }
+            
+            $suma += $valor;
+            $totalRespuestas++;
+            
+            // Insertar respuesta en BD
+            $stmt = $pdo->prepare("
+                INSERT INTO respuestas (cuestionario_id, habilidad_id, habilidad_nombre, pregunta_index, pregunta_texto, valor_respuesta)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ");
+            
+            $stmt->execute([
+                $cuestionario_id,
+                $id_habilidad,
+                $habilidad['nombre'],
+                $idx,
+                $habilidad['preguntas'][$idx],
+                $valor
+            ]);
+        }
+        
+        // Calcular promedio de la habilidad
+        $promedio = $suma / $cantidad;
+        $promedioGeneral += $suma;
+        
+        // Obtener nivel de la habilidad
+        $nivel = obtenerNivel($promedio);
+        
+        // Guardar resultado de habilidad
+        $stmt = $pdo->prepare("
+            INSERT INTO resultados_habilidades 
+            (cuestionario_id, habilidad_id, habilidad_nombre, habilidad_descripcion, promedio, nivel, clase, mensaje)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        
+        $stmt->execute([
+            $cuestionario_id,
+            $id_habilidad,
+            $habilidad['nombre'],
+            $habilidad['descripcion'],
+            round($promedio, 2),
+            $nivel['nivel'],
+            $nivel['clase'],
+            $nivel['mensaje']
+        ]);
+        
+        $resultados[$id_habilidad] = [
+            'nombre' => $habilidad['nombre'],
+            'descripcion' => $habilidad['descripcion'],
+            'promedio' => round($promedio, 2),
+            'nivel' => $nivel['nivel'],
+            'clase' => $nivel['clase'],
+            'mensaje' => $nivel['mensaje']
+        ];
     }
     
-    $promedio = $suma / $cantidad;
-    $promedioGeneral += $suma;
+    // Calcular promedio general
+    $promedioGeneral = $promedioGeneral / $totalRespuestas;
+    $nivelGeneral = obtenerNivel($promedioGeneral);
     
-    // Obtener nivel de la habilidad
-    $nivel = obtenerNivel($promedio);
+    // Actualizar cuestionario como completado
+    $stmt = $pdo->prepare("
+        UPDATE cuestionarios
+        SET estado = 'completado',
+            fecha_completado = NOW(),
+            promedio_general = ?,
+            nivel_general = ?,
+            total_preguntas = ?,
+            preguntas_respondidas = ?
+        WHERE id = ?
+    ");
     
-    $resultados[$id_habilidad] = [
-        'nombre' => $habilidad['nombre'],
-        'descripcion' => $habilidad['descripcion'],
-        'respuestas' => $respuestas,
-        'promedio' => round($promedio, 2),
-        'nivel' => $nivel['nivel'],
-        'clase' => $nivel['clase'],
-        'mensaje' => $nivel['mensaje']
-    ];
+    $stmt->execute([
+        round($promedioGeneral, 2),
+        $nivelGeneral['nivel'],
+        $totalRespuestas,
+        $totalRespuestas,
+        $cuestionario_id
+    ]);
+    
+    // Eliminar progreso temporal
+    $stmt = $pdo->prepare("DELETE FROM progreso_cuestionario WHERE cuestionario_id = ?");
+    $stmt->execute([$cuestionario_id]);
+    
+    // Commit transacción
+    $pdo->commit();
+    
+    // Registrar actividad
+    registrarActividad('usuario', $usuario_id, $empresa_id, 'cuestionario_completado', "Cuestionario #$cuestionario_id completado");
+    
+    // Guardar ID en sesión para confirmación
+    $_SESSION['cuestionario_completado'] = $cuestionario_id;
+    $_SESSION['success'] = 'Tu evaluación ha sido enviada exitosamente.';
+    
+    // Redirigir a página de confirmación (los usuarios NO ven resultados)
+    header('Location: confirmacion.php');
+    exit;
+    
+} catch (Exception $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    
+    // Log detallado del error
+    $errorMsg = "Error al procesar cuestionario: " . $e->getMessage();
+    $errorMsg .= "\nArchivo: " . $e->getFile();
+    $errorMsg .= "\nLínea: " . $e->getLine();
+    $errorMsg .= "\nStack trace: " . $e->getTraceAsString();
+    error_log($errorMsg);
+    
+    $_SESSION['error'] = 'Error al procesar el cuestionario: ' . $e->getMessage();
+    header('Location: formulario.php');
+    exit;
 }
-
-// Calcular promedio general
-$promedioGeneral = $promedioGeneral / $totalRespuestas;
-$nivelGeneral = obtenerNivel($promedioGeneral);
-
-// Preparar datos para guardar
-$evaluacion = [
-    'id' => uniqid(),
-    'fecha' => date('Y-m-d H:i:s'),
-    'nombre' => $nombre,
-    'email' => $email,
-    'resultados' => $resultados,
-    'promedio_general' => round($promedioGeneral, 2),
-    'nivel_general' => $nivelGeneral['nivel'],
-    'total_preguntas' => $totalRespuestas
-];
-
-// Guardar en archivo JSON
-$archivo = DATOS_DIR . '/evaluacion_' . $evaluacion['id'] . '.json';
-file_put_contents($archivo, json_encode($evaluacion, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-// Guardar ID en sesión para mostrar resultados
-$_SESSION['evaluacion_id'] = $evaluacion['id'];
-$_SESSION['evaluacion'] = $evaluacion;
-
-// Redirigir a resultados
-header('Location: resultados.php?id=' . $evaluacion['id']);
-exit;
 ?>
