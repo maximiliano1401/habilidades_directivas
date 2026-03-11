@@ -29,10 +29,26 @@ try {
     // Recopilar todas las respuestas del formulario
     $respuestas = [];
     foreach ($_POST as $key => $value) {
-        if (strpos($key, '[') !== false && $key !== 'action') {
-            $respuestas[$key] = $value;
+        // Guardar campos que sean arrays (habilidades) o campos con []
+        // Excluir campos de control
+        if ($key !== 'action' && 
+            $key !== 'cuestionario_id' && 
+            $key !== 'paso_actual' &&
+            $key !== 'usuario_id') {
+            
+            // Si es un array (PHP convirtió tecnicas[0] en array)
+            if (is_array($value)) {
+                foreach ($value as $subkey => $subvalue) {
+                    $respuestas["{$key}[{$subkey}]"] = $subvalue;
+                }
+            } else {
+                $respuestas[$key] = $value;
+            }
         }
     }
+    
+    // Log para debug
+    error_log("Respuestas extraídas: " . json_encode($respuestas, JSON_UNESCAPED_UNICODE));
     
     // Guardar progreso
     $respuestas_json = json_encode($respuestas, JSON_UNESCAPED_UNICODE);

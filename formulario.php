@@ -475,7 +475,6 @@ $pasos = [
         const totalPreguntas = <?php echo $total_preguntas; ?>;
         const cuestionarioId = <?php echo $cuestionario_id; ?>;
         const usuarioId = <?php echo $usuario_id; ?>;
-        let autoguardadoTimeout = null;
 
         // Cargar respuestas guardadas
         const respuestasGuardadas = <?php echo json_encode($respuestas_guardadas); ?>;
@@ -514,45 +513,43 @@ $pasos = [
         }
 
         function autoguardar() {
-            // Cancelar autoguardado anterior si existe
-            if (autoguardadoTimeout) {
-                clearTimeout(autoguardadoTimeout);
-            }
-
-            // Programar autoguardado después de 2 segundos de inactividad
-            autoguardadoTimeout = setTimeout(() => {
-                guardarProgreso();
-            }, 2000);
+            // Guardar inmediatamente sin delay
+            guardarProgreso();
         }
 
         function guardarProgreso() {
-            console.log('Guardando progreso...');
             const formData = new FormData(document.getElementById('evaluacionForm'));
             formData.append('action', 'autoguardar');
+            formData.append('cuestionario_id', cuestionarioId);
             formData.append('paso_actual', currentStep);
 
             // Mostrar indicador de guardado
             const status = document.getElementById('autoguardadoStatus');
             status.innerHTML = '<i class="bi bi-hourglass-split"></i> Guardando...';
 
+            // Guardar de forma asíncrona sin bloquear
             fetch('guardar_progreso.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en el servidor');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
-                    status.innerHTML = '<i class="bi bi-check-circle"></i> Guardado';
-                    setTimeout(() => {
-                        status.innerHTML = 'Autoguardado activado';
-                    }, 2000);
+                    status.innerHTML = '<i class="bi bi-check-circle text-success"></i> Guardado';
+                    console.log('✓ Progreso guardado:', data.respuestas_guardadas, 'respuestas');
                 } else {
-                    status.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Error al guardar';
+                    status.innerHTML = '<i class="bi bi-exclamation-triangle text-warning"></i> Error';
+                    console.error('Error al guardar:', data.error);
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                status.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Error';
+                status.innerHTML = '<i class="bi bi-exclamation-triangle text-danger"></i> Error';
+                console.error('Error de red:', error);
             });
         }
 
@@ -625,11 +622,9 @@ $pasos = [
                 return false;
             }
             
-            // Si llegamos aquí, el usuario confirmó - detener autoguardado y mostrar loading
-            console.log('Deteniendo autoguardado y enviando formulario...');
-            if (autoguardadoTimeout) {
-                clearTimeout(autoguardadoTimeout);
-            }
+            // Si llegamos aquí, el usuario confirmó - guardar una última vez antes de enviar
+            console.log('Guardando progreso final y enviando formulario...');
+            guardarProgreso();
             
             // Deshabilitar botón de envío y mostrar mensaje
             const submitBtn = document.querySelector('button[type="submit"]');
