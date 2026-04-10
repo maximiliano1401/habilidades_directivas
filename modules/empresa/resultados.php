@@ -1,12 +1,12 @@
 <?php
-require_once 'config.php';
-session_start();
+require_once __DIR__ . '/../../config/config.php';
+iniciarSesionSegura();
 
 // Obtener ID de evaluación
 $evaluacion_id = $_GET['id'] ?? ($_SESSION['evaluacion_id'] ?? null);
 
 if (!$evaluacion_id) {
-    header('Location: index.php');
+    header('Location: ' . BASE_URL);
     exit;
 }
 
@@ -14,7 +14,7 @@ if (!$evaluacion_id) {
 $archivo = DATOS_DIR . '/evaluacion_' . $evaluacion_id . '.json';
 
 if (!file_exists($archivo)) {
-    header('Location: index.php');
+    header('Location: ' . BASE_URL);
     exit;
 }
 
@@ -278,7 +278,7 @@ $areas_mejora = array_filter($resultados, function($r) {
 <body>
     <nav class="navbar-custom">
         <div class="container">
-            <a class="text-white text-decoration-none" href="index.php">
+            <a class="text-white text-decoration-none" href="<?php echo BASE_URL; ?>">
                 <i class="bi bi-house"></i> Inicio
             </a>
             <span class="text-white">
@@ -497,7 +497,7 @@ $areas_mejora = array_filter($resultados, function($r) {
                 <button onclick="alert('Función PDF próximamente disponible')" class="btn btn-outline-custom btn-action me-2" disabled>
                     <i class="bi bi-file-pdf me-2"></i>Descargar PDF
                 </button>
-                <a href="index.php" class="btn btn-outline-custom btn-action">
+                <a href="<?php echo BASE_URL; ?>" class="btn btn-outline-custom btn-action">
                     <i class="bi bi-house me-2"></i>Nueva Evaluación
                 </a>
             </div>

@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../../config/config.php';
 iniciarSesionSegura();
 requerirAdmin();
 
@@ -156,12 +156,15 @@ unset($_SESSION['mensaje'], $_SESSION['error']);
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
+                    <a href="configuracion.php" class="btn btn-outline-light btn-sm me-2" title="Configuración">
+                        <i class="bi bi-gear"></i>
+                    </a>
                     <span class="text-white me-3">
                         <i class="bi bi-person-circle me-2"></i>
                         <strong><?php echo htmlspecialchars($admin_nombre); ?></strong>
                         <span class="admin-badge ms-2">ADMIN</span>
                     </span>
-                    <a href="logout.php" class="btn btn-outline-light btn-sm">
+                    <a href="<?php echo BASE_URL; ?>modules/auth/logout.php" class="btn btn-outline-light btn-sm">
                         <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                     </a>
                 </div>
@@ -266,7 +269,13 @@ unset($_SESSION['mensaje'], $_SESSION['error']);
                                 <?php endif; ?>
                             </td>
                             <td>
+                                <a href="editar.php?tipo=empresa&id=<?php echo $empresa['id']; ?>" class="btn btn-sm btn-info me-1" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
                                 <?php if ($empresa['activo']): ?>
+                                <button class="btn btn-sm btn-warning me-1" onclick="restaurarPassword('empresa', <?php echo $empresa['id']; ?>, '<?php echo htmlspecialchars($empresa['nombre']); ?>')" title="Restaurar Contraseña">
+                                    <i class="bi bi-key"></i>
+                                </button>
                                 <button class="btn btn-sm btn-danger" onclick="confirmarEliminar('empresa', <?php echo $empresa['id']; ?>, '<?php echo htmlspecialchars($empresa['nombre']); ?>')">
                                     <i class="bi bi-trash"></i>
                                 </button>
@@ -316,7 +325,13 @@ unset($_SESSION['mensaje'], $_SESSION['error']);
                                 <?php endif; ?>
                             </td>
                             <td>
+                                <a href="editar.php?tipo=usuario&id=<?php echo $usuario['id']; ?>" class="btn btn-sm btn-info me-1" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
                                 <?php if ($usuario['activo']): ?>
+                                <button class="btn btn-sm btn-warning me-1" onclick="restaurarPassword('usuario', <?php echo $usuario['id']; ?>, '<?php echo htmlspecialchars($usuario['nombre']); ?>')" title="Restaurar Contraseña">
+                                    <i class="bi bi-key"></i>
+                                </button>
                                 <button class="btn btn-sm btn-danger" onclick="confirmarEliminar('usuario', <?php echo $usuario['id']; ?>, '<?php echo htmlspecialchars($usuario['nombre']); ?>')">
                                     <i class="bi bi-trash"></i>
                                 </button>
@@ -340,7 +355,7 @@ unset($_SESSION['mensaje'], $_SESSION['error']);
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST" action="admin_acciones.php">
+                <form method="POST" action="acciones.php">
                     <input type="hidden" name="accion" value="crear_empresa">
                     <div class="modal-body">
                         <div class="mb-3">
@@ -376,14 +391,104 @@ unset($_SESSION['mensaje'], $_SESSION['error']);
         </div>
     </div>
 
+    <!-- Modal Restaurar Contraseña -->
+    <div class="modal fade" id="modalRestaurarPassword" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-key me-2"></i>Restaurar Contraseña
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Se generará una nueva contraseña temporal para:</p>
+                    <div class="alert alert-info">
+                        <strong id="restaurarNombre"></strong>
+                        <br><small id="restaurarTipoTexto"></small>
+                    </div>
+                    <div id="passwordGenerada" style="display:none;">
+                        <div class="alert alert-success">
+                            <strong>Nueva contraseña generada:</strong>
+                            <div class="input-group mt-2">
+                                <input type="text" class="form-control" id="nuevaPasswordTexto" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copiarPassword()">
+                                    <i class="bi bi-clipboard"></i> Copiar
+                                </button>
+                            </div>
+                            <small class="text-muted mt-2 d-block">Comparta esta contraseña de forma segura con el usuario.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-warning" id="btnConfirmarRestaurar" onclick="confirmarRestaurar()">
+                        <i class="bi bi-key me-2"></i>Generar Nueva Contraseña
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Form oculto para eliminaciones -->
-    <form id="formEliminar" method="POST" action="admin_acciones.php" style="display:none;">
+    <form id="formEliminar" method="POST" action="acciones.php" style="display:none;">
         <input type="hidden" name="accion" id="eliminarAccion">
         <input type="hidden" name="id" id="eliminId">
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        let restaurarTipo = '';
+        let restaurarId = 0;
+
+        function restaurarPassword(tipo, id, nombre) {
+            restaurarTipo = tipo;
+            restaurarId = id;
+            document.getElementById('restaurarNombre').textContent = nombre;
+            document.getElementById('restaurarTipoTexto').textContent = tipo === 'empresa' ? 'Cuenta de empresa' : 'Cuenta de usuario';
+            document.getElementById('passwordGenerada').style.display = 'none';
+            document.getElementById('btnConfirmarRestaurar').style.display = 'inline-block';
+            new bootstrap.Modal(document.getElementById('modalRestaurarPassword')).show();
+        }
+
+        function confirmarRestaurar() {
+            document.getElementById('btnConfirmarRestaurar').disabled = true;
+            document.getElementById('btnConfirmarRestaurar').innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Generando...';
+            
+            fetch('acciones.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `accion=restaurar_password&tipo=${restaurarTipo}&id=${restaurarId}&ajax=1`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('nuevaPasswordTexto').value = data.password;
+                    document.getElementById('passwordGenerada').style.display = 'block';
+                    document.getElementById('btnConfirmarRestaurar').style.display = 'none';
+                } else {
+                    alert('Error: ' + data.error);
+                    document.getElementById('btnConfirmarRestaurar').disabled = false;
+                    document.getElementById('btnConfirmarRestaurar').innerHTML = '<i class="bi bi-key me-2"></i>Generar Nueva Contraseña';
+                }
+            })
+            .catch(err => {
+                alert('Error de conexión');
+                document.getElementById('btnConfirmarRestaurar').disabled = false;
+                document.getElementById('btnConfirmarRestaurar').innerHTML = '<i class="bi bi-key me-2"></i>Generar Nueva Contraseña';
+            });
+        }
+
+        function copiarPassword() {
+            const input = document.getElementById('nuevaPasswordTexto');
+            input.select();
+            navigator.clipboard.writeText(input.value).then(() => {
+                const btn = input.nextElementSibling;
+                btn.innerHTML = '<i class="bi bi-check"></i> Copiado';
+                setTimeout(() => btn.innerHTML = '<i class="bi bi-clipboard"></i> Copiar', 2000);
+            });
+        }
+
         function confirmarEliminar(tipo, id, nombre) {
             const tipos = {
                 'empresa': 'la empresa',

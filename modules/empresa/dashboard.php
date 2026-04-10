@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../../config/config.php';
 iniciarSesionSegura();
 requerirEmpresa();
 
@@ -208,7 +208,11 @@ $habilidades_promedio = $stmt->fetchAll();
         <div class="container-fluid px-4">
             <div class="d-flex justify-content-between align-items-center w-100">
                 <div class="text-white">
-                    <i class="bi bi-building me-2"></i>
+                    <?php if (!empty(LOGO_SISTEMA)): ?>
+                        <img src="<?php echo BASE_URL . htmlspecialchars(LOGO_SISTEMA); ?>" alt="Logo" style="max-height: 28px; vertical-align: middle; margin-right: 8px;">
+                    <?php else: ?>
+                        <i class="bi bi-building me-2"></i>
+                    <?php endif; ?>
                     <strong><?php echo htmlspecialchars($empresa['nombre']); ?></strong>
                 </div>
                 <div>
@@ -216,7 +220,7 @@ $habilidades_promedio = $stmt->fetchAll();
                         <i class="bi bi-person-circle"></i>
                         <?php echo htmlspecialchars($_SESSION['nombre']); ?>
                     </span>
-                    <a href="logout.php" class="btn btn-outline-light btn-sm">
+                    <a href="<?php echo BASE_URL; ?>modules/auth/logout.php" class="btn btn-outline-light btn-sm">
                         <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                     </a>
                 </div>
@@ -419,7 +423,11 @@ $habilidades_promedio = $stmt->fetchAll();
                             <td>
                                 <a href="ver_resultado.php?id=<?php echo $cuest['id']; ?>" 
                                    class="btn btn-ver btn-sm">
-                                    <i class="bi bi-eye"></i> Ver Detalle
+                                    <i class="bi bi-eye"></i> Ver
+                                </a>
+                                <a href="exportar_pdf.php?id=<?php echo $cuest['id']; ?>" 
+                                   class="btn btn-sm btn-outline-danger ms-1" title="Descargar PDF">
+                                    <i class="bi bi-file-pdf"></i>
                                 </a>
                             </td>
                         </tr>

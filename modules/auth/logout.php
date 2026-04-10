@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../../config/config.php';
 iniciarSesionSegura();
 
 // Registrar cierre de sesión antes de destruir la información

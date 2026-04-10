@@ -1,6 +1,12 @@
 <?php
 // Configuración del sistema de evaluación de habilidades directivas
 
+// =====================================================
+// RUTAS DEL SISTEMA
+// =====================================================
+define('BASE_PATH', dirname(__DIR__)); // Raíz del proyecto
+define('BASE_URL', '/habilidades_directivas/'); // URL base del proyecto
+
 // Definición de las habilidades directivas y sus preguntas
 $habilidades = [
     [
@@ -170,15 +176,6 @@ function obtenerNivel($promedio) {
     }
 }
 
-// Configuración general
-define('DATOS_DIR', __DIR__ . '/data');
-define('TITULO_SISTEMA', 'Sistema de Evaluación de Habilidades Directivas');
-
-// Crear directorio de datos si no existe
-if (!file_exists(DATOS_DIR)) {
-    mkdir(DATOS_DIR, 0777, true);
-}
-
 // =====================================================
 // CONFIGURACIÓN DE BASE DE DATOS
 // =====================================================
@@ -188,6 +185,10 @@ define('DB_NAME', 'habilidades_directivas');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
+
+// Configuración general (dinámica desde BD)
+define('TITULO_SISTEMA', obtenerConfigSistema('nombre_sistema', 'Sistema de Evaluación de Habilidades Directivas'));
+define('LOGO_SISTEMA', obtenerConfigSistema('logo_url', ''));
 
 // =====================================================
 // FUNCIONES DE CONEXIÓN A BASE DE DATOS
@@ -286,7 +287,7 @@ function obtenerEmpresaActual() {
  */
 function requerirUsuario() {
     if (!esUsuario()) {
-        header('Location: login.php');
+        header('Location: ' . BASE_URL . 'modules/auth/login.php');
         exit;
     }
 }
@@ -296,7 +297,7 @@ function requerirUsuario() {
  */
 function requerirEmpresa() {
     if (!esEmpresa()) {
-        header('Location: login.php?tipo=empresa');
+        header('Location: ' . BASE_URL . 'modules/auth/login.php?tipo=empresa');
         exit;
     }
 }
@@ -471,7 +472,7 @@ function obtenerAdminActual() {
  */
 function requerirAdmin() {
     if (!esAdmin()) {
-        header('Location: admin_login.php');
+        header('Location: ' . BASE_URL . 'modules/auth/admin_login.php');
         exit;
     }
 }
@@ -637,11 +638,63 @@ function obtenerTodosUsuarios() {
 }
 
 /**
+ * Generar contraseña temporal segura
+ * @param int $longitud
+ * @return string
+ */
+function generarPasswordTemporal($longitud = 10) {
+    $caracteres = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789!@#$';
+    $password = '';
+    $max = strlen($caracteres) - 1;
+    for ($i = 0; $i < $longitud; $i++) {
+        $password .= $caracteres[random_int(0, $max)];
+    }
+    return $password;
+}
+
+/**
  * Obtener estadísticas generales del sistema
  */
 function obtenerEstadisticasSistema() {
     $pdo = obtenerConexion();
     $stmt = $pdo->query("SELECT * FROM vista_estadisticas_sistema");
     return $stmt->fetch();
+}
+
+/**
+ * Obtener valor de configuración del sistema
+ */
+function obtenerConfigSistema($clave, $default = '') {
+    try {
+        $pdo = obtenerConexion();
+        $stmt = $pdo->prepare("SELECT valor FROM configuracion_sistema WHERE clave = ?");
+        $stmt->execute([$clave]);
+        $resultado = $stmt->fetchColumn();
+        return $resultado !== false ? $resultado : $default;
+    } catch (Exception $e) {
+        return $default;
+    }
+}
+
+/**
+ * Guardar valor de configuración del sistema
+ */
+function guardarConfigSistema($clave, $valor) {
+    $pdo = obtenerConexion();
+    $stmt = $pdo->prepare("INSERT INTO configuracion_sistema (clave, valor) VALUES (?, ?) ON DUPLICATE KEY UPDATE valor = ?");
+    $stmt->execute([$clave, $valor, $valor]);
+}
+
+/**
+ * Obtener todas las configuraciones del sistema
+ */
+function obtenerTodasConfigSistema() {
+    $pdo = obtenerConexion();
+    $stmt = $pdo->query("SELECT clave, valor FROM configuracion_sistema ORDER BY clave");
+    $config = [];
+    foreach ($stmt->fetchAll() as $row) {
+        $config[$row['clave']] = $row['valor'];
+    }
+    return $config;
 }
 ?>

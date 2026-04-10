@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../../config/config.php';
 iniciarSesionSegura();
 requerirEmpresa();
 
@@ -7,7 +7,7 @@ $empresa_id = obtenerEmpresaActual();
 $cuestionario_id = intval($_GET['id'] ?? 0);
 
 if (!$cuestionario_id) {
-    header('Location: dashboard_empresa.php');
+    header('Location: dashboard.php');
     exit;
 }
 
@@ -31,7 +31,7 @@ $stmt->execute([$cuestionario_id, $empresa_id]);
 $cuestionario = $stmt->fetch();
 
 if (!$cuestionario) {
-    header('Location: dashboard_empresa.php');
+    header('Location: ' . BASE_URL . 'modules/empresa/dashboard.php');
     exit;
 }
 
@@ -130,7 +130,7 @@ $areas_mejora = array_filter($resultados, function($r) {
 <body>
     <nav class="navbar-custom">
         <div class="container">
-            <a class="text-white text-decoration-none" href="dashboard_empresa.php">
+            <a class="text-white text-decoration-none" href="dashboard.php">
                 <i class="bi bi-arrow-left"></i> Volver al Dashboard
             </a>
         </div>
@@ -253,8 +253,11 @@ $areas_mejora = array_filter($resultados, function($r) {
             <!-- Acciones -->
             <div class="row mt-5">
                 <div class="col-12 text-center">
-                    <a href="dashboard_empresa.php" class="btn btn-outline-primary">
+                    <a href="dashboard.php" class="btn btn-outline-primary">
                         <i class="bi bi-arrow-left"></i> Volver al Dashboard
+                    </a>
+                    <a href="exportar_pdf.php?id=<?php echo $cuestionario_id; ?>" class="btn btn-danger ms-2">
+                        <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
                     </a>
                     <button class="btn btn-warning ms-2" onclick="window.print()">
                         <i class="bi bi-printer"></i> Imprimir Reporte

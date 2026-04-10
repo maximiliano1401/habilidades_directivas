@@ -10,13 +10,28 @@ Options -Indexes
 AddDefaultCharset UTF-8
 
 # Proteger archivos sensibles
-<Files "config.php">
+<FilesMatch "\.(sql|json|md|lock)$">
     Require all denied
-</Files>
+</FilesMatch>
 
 <Files ".gitkeep">
     Require all denied
 </Files>
+
+<Files ".gitignore">
+    Require all denied
+</Files>
+
+# Proteger directorios sensibles
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^config/ - [F,L]
+    RewriteRule ^database/ - [F,L]
+    RewriteRule ^storage/uploads/.*\.(png|jpg|jpeg|svg|webp)$ - [L]
+    RewriteRule ^storage/ - [F,L]
+    RewriteRule ^vendor/ - [F,L]
+    RewriteRule ^docs/ - [F,L]
+</IfModule>
 
 # Proteger directorio data
 RedirectMatch 403 ^/habilidades_directivas/data/.*$

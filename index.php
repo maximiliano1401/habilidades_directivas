@@ -1,5 +1,5 @@
 <?php 
-require_once 'config.php';
+require_once __DIR__ . '/config/config.php';
 iniciarSesionSegura();
 ?>
 <!DOCTYPE html>
@@ -198,7 +198,12 @@ iniciarSesionSegura();
         <div class="container">
             <div class="d-flex justify-content-between align-items-center w-100">
                 <span class="text-white h5 mb-0 fw-bold">
-                    <i class="bi bi-briefcase"></i> Sistema de Evaluación Profesional
+                    <?php if (!empty(LOGO_SISTEMA)): ?>
+                        <img src="<?php echo BASE_URL . htmlspecialchars(LOGO_SISTEMA); ?>" alt="Logo" style="max-height: 30px; vertical-align: middle; margin-right: 8px;">
+                    <?php else: ?>
+                        <i class="bi bi-briefcase"></i>
+                    <?php endif; ?>
+                    <?php echo htmlspecialchars(TITULO_SISTEMA); ?>
                 </span>
                 <span class="text-white small">
                     <i class="bi bi-shield-check"></i> Confiable y Validado
@@ -312,19 +317,19 @@ iniciarSesionSegura();
                 <?php
                 if (estaAutenticado()): 
                     if (esUsuario()): ?>
-                        <a href="formulario.php" class="btn btn-comenzar">
+                        <a href="modules/evaluacion/formulario.php" class="btn btn-comenzar">
                             Iniciar Evaluación <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     <?php else: ?>
-                        <a href="dashboard_empresa.php" class="btn btn-comenzar">
+                        <a href="modules/empresa/dashboard.php" class="btn btn-comenzar">
                             Ver Dashboard <i class="bi bi-speedometer2 ms-2"></i>
                         </a>
                     <?php endif; ?>
                 <?php else: ?>
-                    <a href="login.php" class="btn btn-comenzar me-2">
+                    <a href="modules/auth/login.php" class="btn btn-comenzar me-2">
                         <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión
                     </a>
-                    <a href="registro_usuario.php" class="btn btn-outline-secondary btn-lg">
+                    <a href="modules/auth/registro_usuario.php" class="btn btn-outline-secondary btn-lg">
                         <i class="bi bi-person-plus me-2"></i> Registrarse
                     </a>
                 <?php endif; ?>

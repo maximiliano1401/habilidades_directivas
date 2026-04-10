@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../../config/config.php';
 iniciarSesionSegura();
 
 // SOLO las empresas pueden ver resultados
@@ -10,7 +10,7 @@ $empresa_id = obtenerEmpresaActual();
 $cuestionario_id = intval($_GET['id'] ?? 0);
 
 if (!$cuestionario_id) {
-    header('Location: formulario.php');
+    header('Location: ' . BASE_URL . 'modules/evaluacion/formulario.php');
     exit;
 }
 
@@ -27,7 +27,7 @@ $stmt->execute([$cuestionario_id, $empresa_id]);
 $cuestionario = $stmt->fetch();
 
 if (!$cuestionario) {
-    header('Location: dashboard_empresa.php');
+    header('Location: dashboard.php');
     exit;
 }
 
@@ -132,7 +132,7 @@ $areas_mejora = array_filter($resultados, function($r) {
                 <i class="bi bi-person-circle me-2"></i>
                 <strong><?php echo htmlspecialchars($_SESSION['nombre']); ?></strong>
             </span>
-            <a href="logout.php" class="btn btn-outline-light btn-sm">
+            <a href="<?php echo BASE_URL; ?>modules/auth/logout.php" class="btn btn-outline-light btn-sm">
                 <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
             </a>
         </div>
@@ -260,7 +260,7 @@ $areas_mejora = array_filter($resultados, function($r) {
                     <button class="btn btn-warning" onclick="window.print()">
                         <i class="bi bi-printer"></i> Imprimir Reporte
                     </button>
-                    <a href="logout.php" class="btn btn-outline-secondary ms-2">
+                    <a href="<?php echo BASE_URL; ?>modules/auth/logout.php" class="btn btn-outline-secondary ms-2">
                         <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                     </a>
                 </div>

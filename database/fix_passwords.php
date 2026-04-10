@@ -4,7 +4,7 @@
  * Ejecutar una sola vez para actualizar los hashes de contraseñas
  */
 
-require_once 'config.php';
+require_once __DIR__ . '/../config/config.php';
 
 echo "=== CORRECCIÓN DE CONTRASEÑAS ===\n\n";
 

@@ -1,0 +1,11 @@
+{
+    "name": "habilidades-directivas/sistema-evaluacion",
+    "description": "Sistema de Evaluación de Habilidades Directivas",
+    "require": {
+        "php": ">=7.4",
+        "dompdf/dompdf": "^2.0"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

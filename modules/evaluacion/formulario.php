@@ -1,5 +1,5 @@
 <?php 
-require_once 'config.php';
+require_once __DIR__ . '/../../config/config.php';
 iniciarSesionSegura();
 requerirUsuario(); // Solo usuarios autenticados pueden acceder
 
@@ -328,7 +328,7 @@ $pasos = [
                     <i class="bi bi-save me-1"></i>
                     <small id="autoguardadoStatus">Autoguardado activado</small>
                 </span>
-                <a href="logout.php" class="btn btn-outline-light btn-sm">
+                <a href="<?php echo BASE_URL; ?>modules/auth/logout.php" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                 </a>
             </div>

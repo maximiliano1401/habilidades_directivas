@@ -1,10 +1,10 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../../config/config.php';
 iniciarSesionSegura();
 
 // Si ya está autenticado, redirigir
 if (estaAutenticado()) {
-    header('Location: ' . (esUsuario() ? 'formulario.php' : 'dashboard_empresa.php'));
+    header('Location: ' . BASE_URL . (esUsuario() ? 'modules/evaluacion/formulario.php' : 'modules/empresa/dashboard.php'));
     exit;
 }
 

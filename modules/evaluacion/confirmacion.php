@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../../config/config.php';
 iniciarSesionSegura();
 requerirUsuario();
 
@@ -165,7 +165,7 @@ $nombre_usuario = $_SESSION['nombre'] ?? 'Usuario';
             </small>
         </div>
         
-        <a href="logout.php" class="btn btn-primary mt-3">
+        <a href="<?php echo BASE_URL; ?>modules/auth/logout.php" class="btn btn-primary mt-3">
             <i class="bi bi-box-arrow-right me-2"></i>
             Cerrar Sesión
         </a>

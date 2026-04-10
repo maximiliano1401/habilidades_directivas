@@ -1,0 +1,20 @@
+# Dependencias
+/vendor/
+
+# Logs
+/storage/logs/*.log
+
+# Temporales
+/storage/temp/*
+!/storage/temp/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Composer
+composer.lock

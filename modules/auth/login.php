@@ -1,13 +1,13 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../../config/config.php';
 iniciarSesionSegura();
 
 // Si ya está autenticado, redirigir
 if (estaAutenticado()) {
     if (esUsuario()) {
-        header('Location: formulario.php');
+        header('Location: ' . BASE_URL . 'modules/evaluacion/formulario.php');
     } else {
-        header('Location: dashboard_empresa.php');
+        header('Location: ' . BASE_URL . 'modules/empresa/dashboard.php');
     }
     exit;
 }
@@ -58,8 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Registrar actividad
                     registrarActividad('empresa', null, $empresa['id'], 'login', 'Inicio de sesión exitoso');
                     
-                    header('Location: dashboard_empresa.php');
-                    exit;
+                    header('Location: ' . BASE_URL . 'modules/empresa/dashboard.php');
                 } else {
                     $error = 'Credenciales incorrectas.';
                     registrarActividad('empresa', null, null, 'login_fallido', "Intento fallido para: $email");
@@ -96,8 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Registrar actividad
                     registrarActividad('usuario', $usuario['id'], $usuario['empresa_id'], 'login', 'Inicio de sesión exitoso');
                     
-                    header('Location: formulario.php');
-                    exit;
+                    header('Location: ' . BASE_URL . 'modules/evaluacion/formulario.php');
                 } else {
                     $error = 'Credenciales incorrectas.';
                     registrarActividad('usuario', null, null, 'login_fallido', "Intento fallido para: $email");
@@ -344,7 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     
                     <div class="text-center mt-3">
-                        <a href="index.php" class="back-link">
+                        <a href="<?php echo BASE_URL; ?>" class="back-link">
                             <i class="bi bi-arrow-left"></i>
                             Volver al inicio
                         </a>

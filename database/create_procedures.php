@@ -3,7 +3,7 @@
  * Script para crear procedimientos almacenados faltantes
  */
 
-require_once 'config.php';
+require_once __DIR__ . '/../config/config.php';
 
 echo "=== CREANDO PROCEDIMIENTOS ALMACENADOS ===\n\n";
 
@@ -11,7 +11,7 @@ try {
     $pdo = obtenerConexion();
     
     // Leer el archivo SQL
-    $sql = file_get_contents('create_procedures.sql');
+    $sql = file_get_contents(__DIR__ . '/create_procedures.sql');
     
     // Separar por el delimitador DELIMITER
     $sql = str_replace('DELIMITER //', '', $sql);
