@@ -123,6 +123,60 @@ $areas_mejora = array_filter($resultados, function($r) {
             text-align: center;
             margin-bottom: 2rem;
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 767.98px) {
+            .navbar-custom {
+                padding: 0.75rem 0;
+            }
+            .navbar-custom .container {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .congrats-box {
+                padding: 1.5rem 1rem;
+            }
+            .congrats-box h2 {
+                font-size: 1.3rem;
+            }
+            .results-container {
+                padding: 1.25rem;
+                margin: 1rem 0;
+            }
+            .results-container h2 {
+                font-size: 1.3rem;
+            }
+            .score-card {
+                padding: 1.5rem;
+                margin-top: 1rem;
+            }
+            .score-display {
+                font-size: 2.5rem;
+            }
+            .chart-container {
+                height: 280px;
+            }
+            .habilidad-card {
+                padding: 1rem;
+            }
+            .habilidad-card .d-flex {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .habilidad-card .text-end {
+                text-align: left !important;
+            }
+            .habilidad-card .row .col-md-4 {
+                text-align: left !important;
+                margin-top: 0.5rem;
+            }
+            .habilidad-card .h2 {
+                font-size: 1.5rem;
+            }
+            .habilidad-card .h3 {
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 <body>

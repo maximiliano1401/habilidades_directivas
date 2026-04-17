@@ -200,6 +200,66 @@ $habilidades_promedio = $stmt->fetchAll();
             background: #E67E22;
             color: white;
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 991.98px) {
+            .navbar-custom .d-flex {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .navbar-custom .d-flex > div:last-child {
+                width: 100%;
+                text-align: right;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .navbar-custom {
+                padding: 0.75rem 0;
+            }
+            .container-fluid {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+            .d-flex.justify-content-between.align-items-center.mb-4 {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 0.75rem;
+            }
+            .stat-card {
+                padding: 1rem;
+                margin-bottom: 0.25rem;
+            }
+            .stat-card .stat-value {
+                font-size: 1.5rem;
+            }
+            .stat-card .stat-label {
+                font-size: 0.7rem;
+            }
+            .stat-card .stat-icon {
+                font-size: 1.5rem;
+            }
+            .section-card {
+                padding: 1.25rem;
+                margin-bottom: 1rem;
+            }
+            .section-card h5 {
+                font-size: 1rem;
+            }
+            .section-card [style*="height: 300px"] {
+                height: 250px !important;
+            }
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+            .table td, .table th {
+                white-space: nowrap;
+                padding: 0.4rem 0.5rem;
+            }
+            h3 {
+                font-size: 1.2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -247,7 +307,7 @@ $habilidades_promedio = $stmt->fetchAll();
 
         <!-- Estadísticas Generales -->
         <div class="row mb-4">
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
@@ -261,7 +321,7 @@ $habilidades_promedio = $stmt->fetchAll();
                 </div>
             </div>
             
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
@@ -275,7 +335,7 @@ $habilidades_promedio = $stmt->fetchAll();
                 </div>
             </div>
             
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
@@ -289,7 +349,7 @@ $habilidades_promedio = $stmt->fetchAll();
                 </div>
             </div>
             
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>

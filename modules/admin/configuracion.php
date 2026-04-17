@@ -90,6 +90,36 @@ unset($_SESSION['mensaje'], $_SESSION['error']);
             font-size: 0.75rem;
             font-weight: 600;
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 767.98px) {
+            .admin-navbar {
+                padding: 0.75rem 0;
+            }
+            .admin-navbar h5 {
+                font-size: 1rem;
+            }
+            .admin-navbar .fs-3 {
+                font-size: 1.3rem !important;
+            }
+            .admin-navbar .d-flex {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .container[style] {
+                max-width: 100% !important;
+                padding: 0 1rem;
+            }
+            .form-card {
+                padding: 1.25rem;
+            }
+            .upload-area {
+                padding: 1.25rem;
+            }
+            .logo-preview {
+                max-width: 200px;
+            }
+        }
     </style>
 </head>
 <body>

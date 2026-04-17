@@ -190,6 +190,87 @@ iniciarSesionSegura();
             border-left: 4px solid var(--accent-gold);
             margin: 2rem 0;
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 767.98px) {
+            .navbar-custom .container {
+                padding: 0 1rem;
+            }
+            .navbar-custom .d-flex {
+                flex-wrap: wrap;
+                gap: 0.25rem;
+            }
+            .navbar-custom .h5 {
+                font-size: 1rem;
+            }
+            .navbar-custom .small {
+                font-size: 0.7rem;
+            }
+            .stats-bar {
+                padding: 1rem 0;
+            }
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            .stat-label {
+                font-size: 0.75rem;
+            }
+            .stat-item {
+                padding: 0.5rem;
+            }
+            .hero-section {
+                padding: 2rem 1.25rem;
+                margin: 1.5rem 0;
+            }
+            .hero-section .display-5 {
+                font-size: 1.5rem;
+            }
+            .hero-section .lead {
+                font-size: 0.95rem;
+            }
+            .hero-section .lead br {
+                display: none;
+            }
+            .feature-box {
+                padding: 1.25rem 1rem;
+                margin: 0.5rem 0;
+            }
+            .feature-icon {
+                font-size: 1.5rem;
+            }
+            .btn-comenzar {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .btn-outline-secondary.btn-lg {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+            .info-badge {
+                font-size: 0.85rem;
+                padding: 0.75rem 1rem;
+                line-height: 1.8;
+            }
+            .section-title {
+                font-size: 1.1rem;
+                margin-bottom: 1.5rem;
+            }
+            .habilidad-item h6 {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 575.98px) {
+            .stats-bar .row > div {
+                flex: 0 0 33.333%;
+                max-width: 33.333%;
+            }
+            .hero-section .display-5 {
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -216,13 +297,13 @@ iniciarSesionSegura();
     <div class="stats-bar">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-4">
                     <div class="stat-item">
                         <span class="stat-number">11</span>
                         <span class="stat-label">Habilidades Clave</span>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-4">
                     <div class="stat-item">
                         <span class="stat-number"><?php 
                             $total_preguntas = 0;
@@ -234,7 +315,7 @@ iniciarSesionSegura();
                         <span class="stat-label">Criterios de Evaluación</span>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-4">
                     <div class="stat-item">
                         <span class="stat-number">15</span>
                         <span class="stat-label">Minutos Promedio</span>
@@ -278,7 +359,7 @@ iniciarSesionSegura();
                 ];
                 
                 foreach ($features as $feature): ?>
-                <div class="col-md-6 col-lg-3">
+                <div class="col-6 col-lg-3">
                     <div class="feature-box text-center">
                         <i class="bi <?php echo $feature['icon']; ?> feature-icon"></i>
                         <h5><?php echo $feature['title']; ?></h5>

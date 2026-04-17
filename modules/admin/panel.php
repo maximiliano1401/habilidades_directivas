@@ -141,6 +141,76 @@ unset($_SESSION['mensaje'], $_SESSION['error']);
         .table thead {
             background: var(--bg-light);
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 991.98px) {
+            .admin-navbar .d-flex {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+            .admin-navbar .d-flex > .d-flex:last-child {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                justify-content: flex-end;
+                width: 100%;
+            }
+            .admin-navbar .d-flex > .d-flex:last-child .text-white {
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .admin-navbar {
+                padding: 0.75rem 0;
+            }
+            .admin-navbar h5 {
+                font-size: 1rem;
+            }
+            .admin-navbar .d-flex > .d-flex:first-child .fs-3 {
+                font-size: 1.3rem !important;
+            }
+            .admin-navbar .d-flex > .d-flex:last-child {
+                justify-content: center;
+            }
+            .admin-navbar .admin-badge {
+                display: none;
+            }
+            .stat-card {
+                padding: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            .stat-label {
+                font-size: 0.75rem;
+            }
+            .table-card {
+                padding: 1rem;
+                margin-top: 1rem;
+            }
+            .table-card h4 {
+                font-size: 1.1rem;
+            }
+            .table-card .d-flex {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+            .table td, .table th {
+                white-space: nowrap;
+                padding: 0.5rem;
+            }
+            .container-fluid {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+            .modal-dialog {
+                margin: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -192,28 +262,28 @@ unset($_SESSION['mensaje'], $_SESSION['error']);
 
         <!-- Estadísticas -->
         <div class="row g-3 mb-4">
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <i class="bi bi-building fs-2 mb-2" style="color: var(--accent-gold);"></i>
                     <div class="stat-number"><?php echo $stats['total_empresas_activas']; ?></div>
                     <div class="stat-label">Empresas Activas</div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <i class="bi bi-people fs-2 mb-2" style="color: var(--accent-gold);"></i>
                     <div class="stat-number"><?php echo $stats['total_usuarios_activos']; ?></div>
                     <div class="stat-label">Usuarios Activos</div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <i class="bi bi-clipboard-check fs-2 mb-2" style="color: var(--accent-gold);"></i>
                     <div class="stat-number"><?php echo $stats['total_cuestionarios_completados']; ?></div>
                     <div class="stat-label">Cuestionarios Completados</div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <i class="bi bi-graph-up fs-2 mb-2" style="color: var(--accent-gold);"></i>
                     <div class="stat-number"><?php echo number_format($stats['promedio_general_sistema'] ?? 0, 1); ?></div>

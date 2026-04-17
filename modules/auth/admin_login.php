@@ -219,6 +219,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 0.85rem;
             margin-top: 1.5rem;
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 767.98px) {
+            .navbar-custom {
+                padding: 0.75rem 0;
+            }
+            .navbar-custom .h5 {
+                font-size: 0.95rem;
+            }
+            .admin-login-card {
+                padding: 2rem 1.5rem;
+                margin-top: 70px;
+                max-width: 100%;
+            }
+            .admin-icon {
+                width: 60px;
+                height: 60px;
+            }
+            .admin-icon i {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.3rem;
+            }
+            .container .col-md-6 {
+                padding: 0 1rem;
+            }
+        }
     </style>
 </head>
 <body>

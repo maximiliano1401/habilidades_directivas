@@ -192,6 +192,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .back-link:hover {
             color: var(--accent-gold);
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 767.98px) {
+            body {
+                padding: 1rem 0;
+            }
+            .register-container {
+                max-width: 100%;
+                padding: 0 0.75rem;
+            }
+            .register-card {
+                border-radius: 8px;
+            }
+            .register-header {
+                padding: 1.5rem;
+            }
+            .register-header i {
+                font-size: 2rem;
+            }
+            .register-body {
+                padding: 1.5rem;
+            }
+            .form-control, .form-select {
+                padding: 0.65rem 0.75rem;
+                font-size: 0.95rem;
+            }
+            .register-body .col-md-6 {
+                margin-bottom: 0 !important;
+            }
+        }
     </style>
 </head>
 <body>

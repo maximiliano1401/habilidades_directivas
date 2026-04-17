@@ -314,6 +314,107 @@ $pasos = [
         .required-field {
             color: #DC2626;
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 991.98px) {
+            .col-lg-9 {
+                order: 1;
+            }
+            .col-lg-3 {
+                order: 2;
+            }
+            .progress-sidebar {
+                position: static !important;
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .navbar-custom {
+                padding: 0.75rem 0;
+            }
+            .navbar-custom .container {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .navbar-custom .container > span:first-child {
+                font-size: 0.9rem;
+            }
+            .navbar-custom .container > div {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            #autoguardadoStatus {
+                font-size: 0.75rem;
+            }
+            .form-container {
+                padding: 1.25rem;
+                margin: 1rem 0;
+            }
+            .form-container h2 {
+                font-size: 1.25rem;
+            }
+            /* Stepper responsive */
+            .stepper-wrapper {
+                margin-bottom: 2rem;
+            }
+            .stepper-circle {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+            .stepper-label {
+                font-size: 0.65rem;
+            }
+            /* Likert scale responsive - 5 en fila pero más compacto */
+            .likert-scale {
+                gap: 0.35rem;
+            }
+            .likert-option label {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.75rem;
+            }
+            .likert-option label .small {
+                font-size: 0.6rem !important;
+                display: none;
+            }
+            .likert-option label .fw-bold {
+                font-size: 1rem;
+            }
+            .pregunta-item {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            .pregunta-item p {
+                font-size: 0.9rem;
+            }
+            .habilidad-card {
+                padding-left: 1rem;
+                margin-bottom: 2rem;
+            }
+            .btn-nav {
+                padding: 10px 20px;
+                font-size: 0.8rem;
+            }
+            .progress-sidebar {
+                padding: 1rem;
+            }
+            .progress-sidebar .small .d-flex {
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .likert-scale {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 0.2rem;
+            }
+            .likert-option label {
+                padding: 0.4rem 0.15rem;
+            }
+        }
     </style>
 </head>
 <body>

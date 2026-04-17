@@ -271,6 +271,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .back-link:hover {
             color: var(--accent-gold);
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 767.98px) {
+            body {
+                padding: 1rem 0;
+            }
+            .login-container {
+                max-width: 100%;
+                padding: 0 1rem;
+            }
+            .login-card {
+                border-radius: 8px;
+            }
+            .login-header {
+                padding: 1.5rem;
+            }
+            .login-header i {
+                font-size: 2rem;
+            }
+            .login-body {
+                padding: 1.5rem;
+            }
+            .tipo-selector label {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.9rem;
+            }
+            .tipo-selector label i {
+                font-size: 1.2rem !important;
+            }
+            .form-control {
+                padding: 0.65rem 0.75rem;
+                font-size: 0.95rem;
+            }
+            .btn-login {
+                padding: 0.7rem;
+                font-size: 0.95rem;
+            }
+        }
     </style>
 </head>
 <body>

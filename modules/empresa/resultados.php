@@ -273,6 +273,65 @@ $areas_mejora = array_filter($resultados, function($r) {
             .navbar-custom, .action-buttons { display: none; }
             .results-container { box-shadow: none; }
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 767.98px) {
+            .navbar-custom {
+                padding: 0.75rem 0;
+            }
+            .navbar-custom .container {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .results-container {
+                padding: 1.25rem;
+                margin: 1rem 0;
+            }
+            .results-container h2 {
+                font-size: 1.3rem;
+            }
+            .header-section .row {
+                flex-direction: column;
+            }
+            .score-card {
+                padding: 1.5rem;
+                margin-top: 1rem;
+            }
+            .score-display {
+                font-size: 2.5rem;
+            }
+            .stat-box {
+                padding: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            .chart-container {
+                height: 260px;
+            }
+            .habilidad-card {
+                padding: 1rem;
+            }
+            .habilidad-card .row .col-md-4 {
+                text-align: left !important;
+                margin-top: 0.5rem;
+            }
+            .habilidad-card .h2 {
+                font-size: 1.5rem;
+            }
+            .btn-action {
+                width: 100%;
+                margin-bottom: 0.5rem;
+                margin-left: 0 !important;
+            }
+            .section-header {
+                margin: 2rem 0 1rem;
+            }
+            .strength-box, .improvement-box {
+                margin-bottom: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -332,25 +391,25 @@ $areas_mejora = array_filter($resultados, function($r) {
 
             <!-- Stats Dashboard -->
             <div class="row mb-4">
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="stat-box">
                         <span class="stat-number" data-count="<?php echo count($evaluacion['resultados']); ?>">0</span>
                         <span class="stat-label">Áreas Evaluadas</span>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="stat-box">
                         <span class="stat-number" data-count="<?php echo count($fortalezas); ?>">0</span>
                         <span class="stat-label">Fortalezas</span>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="stat-box">
                         <span class="stat-number" data-count="<?php echo count($areas_mejora); ?>">0</span>
                         <span class="stat-label">Áreas de Mejora</span>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="stat-box">
                         <span class="stat-number" data-count="<?php echo $evaluacion['total_preguntas']; ?>">0</span>
                         <span class="stat-label">Criterios Evaluados</span>

@@ -188,6 +188,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 4px;
             margin-bottom: 1.5rem;
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 767.98px) {
+            body {
+                padding: 1rem 0;
+            }
+            .register-container {
+                max-width: 100%;
+                padding: 0 0.75rem;
+            }
+            .register-card {
+                border-radius: 8px;
+            }
+            .register-header {
+                padding: 1.5rem;
+            }
+            .register-header i {
+                font-size: 2rem;
+            }
+            .register-body {
+                padding: 1.5rem;
+            }
+            .form-control, .form-select {
+                padding: 0.65rem 0.75rem;
+                font-size: 0.95rem;
+            }
+        }
     </style>
 </head>
 <body>

@@ -126,6 +126,31 @@ $nombre_usuario = $_SESSION['nombre'] ?? 'Usuario';
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
         }
+        
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 767.98px) {
+            .success-card {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+                border-radius: 12px;
+            }
+            .success-icon {
+                width: 70px;
+                height: 70px;
+            }
+            .success-icon i {
+                font-size: 2rem;
+            }
+            h1 {
+                font-size: 1.4rem;
+            }
+            .lead {
+                font-size: 0.95rem;
+            }
+            .info-box {
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
